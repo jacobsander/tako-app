@@ -6,7 +6,6 @@ import {connect} from 'react-redux'
 
 const FavoriteScreen = ({navigation, favoritePins}) => {
 
-    console.log(favoritePins)
     const [cities, setCities] = useState([]);
 
     // When component is mounted (like componentDidMount in class implementation)
@@ -26,7 +25,6 @@ const FavoriteScreen = ({navigation, favoritePins}) => {
 
     // Create render method for item
     const renderCity = (itemData) => {
-        console.log(itemData.index)
         return (<View></View>)
         // return (
         //     <TouchableOpacity

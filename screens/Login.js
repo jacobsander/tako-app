@@ -5,8 +5,13 @@ import { TextInput } from 'react-native-gesture-handler';
 const LoginScreen = ({navigation}) => {
 
   function buttonWasPressed() {
-    navigation.navigate('App')
+    navigation.navigate('Discover')
   }
+
+  function SearchButtonWasPressed() {
+    navigation.navigate('Discover')
+  }
+
 
   return (
     <ImageBackground 
@@ -15,7 +20,7 @@ const LoginScreen = ({navigation}) => {
     >
       <Text style={styles.title}>
           The world at your finger tips.
-        </Text>
+      </Text>
        
         <View style={styles.card}>
             <Text style={styles.cardText}>Email</Text>
@@ -38,7 +43,7 @@ const LoginScreen = ({navigation}) => {
                 <Text>or</Text>
                 <TouchableOpacity
                 style={styles.button}
-                onPress={() => buttonWasPressed()}
+                onPress={() => SearchButtonWasPressed()}
                 >
                     <Text style={{color: 'white'}}>Sign up</Text>
                 </TouchableOpacity>

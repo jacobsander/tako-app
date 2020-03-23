@@ -48,7 +48,6 @@ const ListScreen = ({navigation, favoritePins, toggle}) => {
           const bodyObject = {};
           bodyObject[pinId] = null
           Axios.put(`https://takotest-99efe.firebaseio.com/users/${userId}/favorites/${pinId}.json`, bodyObject).then(response => {
-            console.log(response.data);
             setPins(pins => [...pins.filter(d => d.id !== pinId)])
           })
         }
@@ -75,8 +74,8 @@ const ListScreen = ({navigation, favoritePins, toggle}) => {
                                 <Text style={styles.attractionTitle}>{item.name}</Text>
                                 <Text numberOfLines={2} style={{fontSize: 14, marginTop: 4}}>{item.description}</Text>
                             </View>
-                            <TouchableOpacity style={{padding: 10, borderRadius: 8, backgroundColor: '#EFEFEF', justifyContent: 'center'}} onPress={() => toggle(item.id)}>
-                                <Text>Delete</Text>
+                            <TouchableOpacity style={{padding: 10, borderRadius: 8, backgroundColor: 'red', justifyContent: 'center'}} onPress={() => toggle(item.id)}>
+                                <Text style={{color: 'white'}}>Delete</Text>
                             </TouchableOpacity>
                             
                         </View>

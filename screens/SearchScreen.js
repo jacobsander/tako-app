@@ -5,7 +5,6 @@ import {addPlace} from '../store/actions/place'
 import {setPins} from '../store/actions/pin'
 
 const SearchScreen = ({navigation, places, pins, add}) => {
-    console.log(pins)
     return(
         
             <ImageBackground

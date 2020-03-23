@@ -1,6 +1,6 @@
 // place.js
 
-import { SET_PINS, TOGGLE_FAVORITE } from './types';
+import { SET_PINS, TOGGLE_FAVORITE, ADD_PIN } from './types';
 
 export const setPins = (pins) => {
   return {
@@ -15,5 +15,12 @@ export const toggleFavorite = (pinId) => {
     payload: {
       pinId
     }
+  }
+}
+
+export const addPin = (pin) => {
+  return {
+    type: ADD_PIN,
+    payload: pin
   }
 }

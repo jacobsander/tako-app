@@ -3,36 +3,20 @@ import {View, Text, StyleSheet, TextInput, Button, Picker, SafeAreaView, FlatLis
 import Axios from 'axios';
 import { connect } from 'react-redux';
 import { addPin } from '../store/actions/pin'
+import RNPickerSelect from 'react-native-picker-select';
 
-const UploadAttraction = ({navigation, cities = [], filters, addPin}) => {
+const UploadAttraction = ({navigation, cities = [], categories, addPin}) => {
 
     const firstCity = cities[2] || {}
-    const [name, setName] = useState('New Attraction');
-    const [city, setCity] = useState();
-    const [imageUrl, setImageUrl] = useState();
-    const [selectedFilters, setSelectedFilters] = useState([]);
-
-    useEffect(() => {
-        setCity(cities[0].id)
-    }, [cities])
-
-
-    // const onSelect = useCallback(
-    //     id => {
-    //     const newSelected = new Map(selected);
-    //     newSelected.set(id, !selected.get(id));
-
-    //     setSelected(newSelected);
-    //     },
-    //     [selected],
-    // ); 
-
+    const [name, setName] = useState('Attraction name');
+    const [city, setCity] = useState('City name');
+    const [imageUrl, setImageUrl] = useState('City URL');
+    const [selectedCategoryFilters, setSelectedCategoryFilters] = useState([]);
 
     return(
+        
         <ScrollView contentContainerStyle={styles.container}>
-            <Text>Upload an attraction!</Text>
             <View style={styles.inputContainer}>
-            <Text style={{paddingVertical: 10}}>Attraction Name</Text>
                 <TextInput
                     onChangeText={text => setName(text)}
                     value={name}
@@ -40,49 +24,39 @@ const UploadAttraction = ({navigation, cities = [], filters, addPin}) => {
                 />
             </View>
             <View style={styles.inputContainer}>
-            <Text style={{paddingVertical: 10}}>City</Text>
-                <Picker
-                    selectedValue={city}
-                    onValueChange={(itemValue, itemIndex) => {
-                        setCity(itemValue)
-                    }}
-                    style={styles.pickerInput}>
+                <View style={styles.textInput}>
+            <RNPickerSelect
+            selectedValue={city}
+            onValueChange={(itemValue, itemIndex) => {setCity(itemValue)}}
+            items={[
+                { label: 'Copenhagen', value: 'copenhagen' },
+                { label: 'Los Angeles', value: 'tokyo' },
+                { label: 'Toronto', value: 'stockholm' },
+                { label: 'Guadalajara', value: 'guadalajara' },
+                { label: 'Stockholm', value: 'stockholm' },
 
-                    {cities.map((city) => (
-                        
-                        <Picker.Item label={city.name} value={city.id}/>
-
-                    ))}
-                
-
-                </Picker>
+            ]}
+          
+        />
+        </View>
             </View>
            
-            <View style={styles.inputContainer}>
-            <Text style={{paddingVertical: 10}}>Image url</Text>
-                <TextInput
-                value={imageUrl}
-                onChangeText={text => setImageUrl(text)}
-                style={styles.textInput}
-                />
-            </View>
-
             <SafeAreaView style={styles.container}>
       <FlatList
         scrollEnabled={false}
         style={{width: '100%'}}
-        data={filters}
-        numColumns={2}
+        data={categories}
+        numColumns={3}
         renderItem={({ item }) => (
             <TouchableOpacity
             onPress={() => {
-                const isSelected = selectedFilters.includes(item.id)
+                const isSelected = selectedCategoryFilters.includes(item.id)
                 if (!isSelected) {
-                    const newSelectedFilters = [...selectedFilters,item.id]
-                    setSelectedFilters(newSelectedFilters)
+                    const newSelectedCategoryFilters = [...selectedCategoryFilters,item.id]
+                    setSelectedCategoryFilters(newSelectedCategoryFilters)
                 } else {
-                    const newSelectedFilters = [...selectedFilters].filter(d => d !== item.id)
-                    setSelectedFilters(newSelectedFilters)
+                    const newSelectedCategoryFilters = [...selectedCategoryFilters].filter(d => d !== item.id)
+                    setSelectedCategoryFilters(newSelectedCategoryFilters)
                 }
             }}
             >
@@ -92,21 +66,21 @@ const UploadAttraction = ({navigation, cities = [], filters, addPin}) => {
           <Image
               source={{uri: item.imageUrl}}
               style={[styles.itemImage, {
-                  opacity: selectedFilters.includes(item.id) ? 1 : 0.3
+                  opacity: selectedCategoryFilters.includes(item.id) ? 1 : 0.3
               }]}
           />
           </TouchableOpacity>
         )}
         keyExtractor={item => item.id}
-        // extraData={selected} // to ensure that flatlist re-renders when something is selected
       />
     </SafeAreaView>    
 
     <Button
     title="Submit"
+    style={styles.submitButton}
     onPress={() => {
         const filterObject = {};
-        selectedFilters.forEach(key => {
+        selectedCategoryFilters.forEach(key => {
             filterObject[key] = true
         })
 
@@ -130,9 +104,8 @@ const UploadAttraction = ({navigation, cities = [], filters, addPin}) => {
 }
 
 UploadAttraction.navigationOptions = ({ navigation }) => ({
-    title: 'Favorites'
+    title: 'Upload an attraction'
   });
-
 
 const styles = StyleSheet.create({
     container: {
@@ -142,12 +115,16 @@ const styles = StyleSheet.create({
     }, 
     inputContainer: {
         width: '90%',
+        padding: 10
     },
     textInput: {
         width: "100%", 
         height: 40, 
         borderColor: 'gray', 
-        borderWidth: 0.5
+        borderWidth: 0.5,
+        borderRadius: 25,
+        paddingLeft: 20,
+        justifyContent: 'center'
     }, 
     pickerInput: {
         borderWidth: 1,
@@ -166,13 +143,20 @@ const styles = StyleSheet.create({
       textAlign: "center",
       marginVertical: 10
     },
+    submitButton: {
+        color: '#FFF', 
+        fontSize: 18, 
+        marginBottom: 8, 
+        marginTop: 8, 
+        fontWeight: '800'
+    }
 });
 
 
 const mapStateToProps = state => {
     return {
       cities: state.cities.cities,
-      filters: state.filters.filters,
+      categories: state.categories.categories,
     }
   }
     

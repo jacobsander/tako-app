@@ -1,35 +1,48 @@
 import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Text, Image, FlatList, ScrollView} from 'react-native';
-import {connect} from 'react-redux'
+import {StyleSheet, View, Text, Image, FlatList, ScrollView, TouchableOpacity} from 'react-native';
+import {connect, useSelector} from 'react-redux'
 import toggleFavorite from '../store/actions/pin'
+import Axios from 'axios'
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const AttractionScreen = ({navigation, pins}) => {
+const AttractionScreen = ({navigation, id, favorites}) => {
 
+    const filterCities = useSelector(state => state.cities.cities)
+    
+    const pins = useSelector(state => state.pins.pins)
     const [pinData, setPinData] = useState({})
-    const [filters, setFilters] = useState([])
+    const [cities, setCities] = useState({})
+    const [categories, setCategories] = useState([])
 
+    console.log(cities)
+    
+  
     useEffect(() => {
         const pinId = navigation.getParam('id');
         const currentPin = pins.find(d => d.id === pinId)
         navigation.setParams({headerName: currentPin.name})
         setPinData(currentPin);
 
-        // Axios(`https://takotest-99efe.firebaseio.com/pins/${pinId}.json`)
-        // .then(response => {
-        //     const data = response.data;
-        //     navigation.setParams({headerName: data.name})
-        //     const filterIds = Object.keys(data.filters || {});
-        //     const filterRequests = filterIds.map(filterId => {
-        //         return Axios(`https://takotest-99efe.firebaseio.com/filters/${filterId}.json`)
-        //     })
+        Axios(`https://takotest-99efe.firebaseio.com/pins/${pinId}.json`)
+        .then(response => {
+            const data = response.data;
+            
+            navigation.setParams({headerName: data.name})
+            const filterIds = Object.keys(data.filters || {});
+            const cityData = data.city
+            const filterRequests = filterIds.map(filterId => {
+                return Axios(`https://takotest-99efe.firebaseio.com/filters/${filterId}.json`)
+            })
 
-        //     Promise.all(filterRequests).then(responses => {
-        //         const filtersData = responses.map(filter => filter.data);
-        //         setPinData(data);
-        //         setFilters(filtersData);
-        //     })
+            Promise.all(filterRequests).then(responses => {
+                const filtersData = responses.map(filter => filter.data);
+                setPinData(data);
+                setCities(cityData)
+                setCategories(filtersData);
+                
+            })
 
-        // })
+        })
       }, []);
 
     return(
@@ -45,7 +58,7 @@ const AttractionScreen = ({navigation, pins}) => {
             <Text style={styles.category}>Categories:</Text>
             <FlatList
                 horizontal={true}
-                data={filters}
+                data={categories}
                 renderItem={({item})=> 
                     <View style={styles.categoryContainer}>
                         <View style={styles.itemContainer}>
@@ -57,9 +70,11 @@ const AttractionScreen = ({navigation, pins}) => {
                                 source={{uri: item.imageUrl}}
                             />
                         </View>
+                        
                     </View>
 
                 }
+            keyExtractor={item => item.id}
             />
         </ScrollView>
     );
@@ -67,9 +82,10 @@ const AttractionScreen = ({navigation, pins}) => {
 
 AttractionScreen.navigationOptions = ({navigation}) => {
     const title = navigation.getParam('headerName')
+    
     return{ 
-        title
-    }
+        title,
+    }   
 }
 
 const styles = StyleSheet.create({
@@ -115,7 +131,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
     return {
-      pins: state.pins.pins
+      pins: state.pins.pins,
+      favorites: state.pins.favorites
     }
   }
     

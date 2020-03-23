@@ -1,5 +1,6 @@
 import React, {useState} from 'react'
-import {View, Text, StyleSheet, Switch} from 'react-native'
+import {View, Text, StyleSheet, Switch, ScrollView, Button} from 'react-native'
+import { SafeAreaView } from 'react-navigation';
 
 const FilterSwitch = props => {
     return (
@@ -15,6 +16,16 @@ const FilterSwitch = props => {
 }
 
 const FilterScreen = () => {
+    
+    // Cities
+    const [copenhagen, setCopenhagen] = useState(false);
+    const [stockholm, setStockholm] = useState(false);
+    const [toronto, setToronto] = useState(false);
+    const [guadalajara, setGuadalajara] = useState(false);
+    const [losAngeles, setLosAngeles] = useState(false);
+    const [tokyo, setTokyo] = useState(false);
+    
+    // Categories
     const [hasCulture, setHasCulture] = useState(false);
     const [hasSports, setHasSports] = useState(false);
     const [hasRomantic, setHasRomantic] = useState(false);
@@ -27,11 +38,52 @@ const FilterScreen = () => {
     const [hasLuxury, setHasLuxury] = useState(false);
 
     return(
-        <View style={styles.container}>
+
+        <SafeAreaView>
+
+        
+
+        <ScrollView contentContainerStyle={{alignItems: 'center'}}>
             <View style={styles.styleContainer}>
+                
+            <View style={styles.headerContainer}>
+                    <Text style={styles.title}>Available Cities</Text>
+                </View>
+
+                <FilterSwitch 
+                label='Copenhagen'
+                state={copenhagen}
+                onChange={newValue => setCopenhagen(newValue)}
+                />
+                <FilterSwitch 
+                label='Stockholm'
+                state={stockholm}
+                onChange={newValue => setStockholm(newValue)}
+                />
+                <FilterSwitch 
+                label='Toronto'
+                state={toronto}
+                onChange={newValue => setToronto(newValue)}
+                />
+                <FilterSwitch 
+                label='Guadalajara'
+                state={guadalajara}
+                onChange={newValue => setGuadalajara(newValue)}
+                />
+                <FilterSwitch 
+                label='Los Angeles'
+                state={losAngeles}
+                onChange={newValue => setLosAngeles(newValue)}
+                />
+                <FilterSwitch 
+                label='Tokyo'
+                state={tokyo}
+                onChange={newValue => setTokyo(newValue)}
+                />
+                
                 <View style={styles.headerContainer}>
-                    <Text style={styles.title}>Available Filters</Text>
-            </View>
+                    <Text style={styles.title}>Available Categories</Text>
+                </View>
 
                 <FilterSwitch 
                 label='Cuture'
@@ -84,8 +136,25 @@ const FilterScreen = () => {
                 onChange={newValue => setHasLuxury(newValue)}
                 />
                 </View>
-        </View>
+        </ScrollView>
+        <Button
+        title="Submit"/>
+        </SafeAreaView>
     );
+}
+
+FilterScreen.navigationOptions = ({navigation}) => {
+    return{
+     // title: 'Overview',
+     headerRight: () => {
+       return (
+         <View>
+           <Button title="Close" onPress={()=> navigation.dismiss()}>
+           </Button> 
+         </View>
+       )
+     }
+   }
 }
 
 const styles = StyleSheet.create({

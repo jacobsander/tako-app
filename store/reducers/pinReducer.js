@@ -1,6 +1,6 @@
 // placeReducer.js
 
-import { SET_PINS, TOGGLE_FAVORITE } from '../actions/types';
+import { SET_PINS, TOGGLE_FAVORITE, ADD_PIN } from '../actions/types';
 
 const initialState = {
   pins: [],
@@ -14,6 +14,12 @@ const pinReducer = (state = initialState, action) => {
         ...state,
         pins: action.payload
       };
+    case ADD_PIN:
+      const newPins = [...pins, action.payload];
+      return {
+        ...state,
+        pins: newPins
+      };
     case TOGGLE_FAVORITE: 
       const pinId = action.payload.pinId;
       let favorites = [...state.favorites];
@@ -22,7 +28,6 @@ const pinReducer = (state = initialState, action) => {
       } else {
         favorites.push(pinId)
       }
-      console.log(favorites)
       return {
         ...state, 
         favorites

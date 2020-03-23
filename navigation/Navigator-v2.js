@@ -1,17 +1,18 @@
 import React from 'react'
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Button} from 'react-native';
 import {createStackNavigator} from 'react-navigation-stack';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import {createBottomTabNavigator } from 'react-navigation-tabs'
-import OverviewScreen from '../screens/OverviewScreen-v2';
+import OverviewScreen from '../screens/OverviewScreen-v3';
 import FavoriteScreen from '../screens/FavoriteScreen';
-import UploadAttraction from '../screens/UploadAttraction-v2';
 import CategoryFilterScreen from '../screens/CategoryFilterScreen';
 import CityFilterScreen from '../screens/CityFilterScreen';
 import AttractionScreen from '../screens/AttractionScreen';
+import UploadAttractionName from '../screens/UploadAttractionName'
+import UploadAttractionCity from '../screens/UploadAttractionCity'
+import UploadAttractionCategory from '../screens/UploadAttractionCategory'
 import ListScreen from '../screens/ListScreen';
-import UploadCategory from '../screens/UploadCategory';
 import SearchScreen from '../screens/SearchScreen';
 import LoginScreen from '../screens/Login';
 import SignUpScreen from '../screens/SignUpScreen';
@@ -35,20 +36,21 @@ const MainNavigator = createBottomTabNavigator({
         }
     }),
     Favorites: createStackNavigator({
-        // FavoritesHome: FavoriteScreen,
         FavoritesDetail: ListScreen,
         AttractionDetail: AttractionScreen,
     }),
     Upload: createStackNavigator({
-        Attraction: UploadAttraction,
-        // Category: UploadCategory,
-    }, {
+        AttractionName: UploadAttractionName,
+        AttractionCity: UploadAttractionCity,
+        AttractionCategory: UploadAttractionCategory,
+    },
+    {
         navigationOptions: {
             tabBarIcon: tabInfo => (
                 <Icon name='upload' style={styles.tabBarIcon} color={tabInfo.tintColor}/>
             )
         }
-    }),
+    })
 }, {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: tabInfo => {
@@ -110,12 +112,32 @@ const cityFilterNavigator = createStackNavigator({
     CityFilters: CityFilterScreen
 });
 
+const drawerNavigator = createStackNavigator({
+    StartSearch: {
+        screen: MainNavigator,
+        navigationOptions: {
+            drawerLabel: 'Discover'
+        }
+    },
+    Filters: createStackNavigator({
+        FilterOverview: ({navigation}) => <View>
+            <Button
+            title='Category'
+            onPress={()=>{navigation.navigate('FilterCategories')}}
+            />
+            <Button
+            title='Cities'
+            onPress={()=>{navigation.navigate('FilterCities')}}
+            />
 
-
-const drawerNavigator = createDrawerNavigator({
-    Category: categoryFilterNavigator,
-    City: cityFilterNavigator
+        </View>,
+        FilterCategories: CategoryFilterScreen,
+        FilterCities: CityFilterScreen
+    })
+}, {
+    mode: 'modal',
+    headerMode: 'none'
 });
 
-export default createAppContainer(MainNavigator);
+export default createAppContainer(drawerNavigator);
 
